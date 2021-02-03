@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./milligram/milligram.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    .small {
+      font-size: 0.7em;
+    }
+    table {
+      counter-reset: item;
+      list-style-type: decimal;
+      width: 100%;
+    }
+    td.counter {
+      padding-left: 4px;
+    }
+    td.counter:before {
+      content: counter(item, decimal) '. ';
+      counter-increment: item;
+      font-size: 0.7em;
+      font-color: rgb(204, 204, 204);
+    }
+    tr.red td, .fail {
+      background-color: rgb(255, 128, 128);
+      font-weight: bold;
+    }
+    tr.green td, .pass {
+      background-color: rgb(153, 255, 153);
+    }
+    thead {
+      display: table;
+      width: calc(100% - 17px);
+    }
+    tbody {
+      width: calc(100% - 17px);
+      display: block;
+      max-height: 90vh;
+      overflow-y: scroll;
+    }
+    th, td {
+      width: calc(100% / 8);
+    }
+    </style>
+    <title>DMARC report (0 entries)</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>IP Address</th>
+          <th>Count</th>
+          <th>Domain</th>
+          <th>SPF</th>
+          <th>DKIM</th>
+          <th>Disposition</th>
+          <th>Reporter</th>
+          <th>Report date</th>
+        </tr>
+      </thead>
+      <tbody>
+      
+      </tbody>
+    </table>
+  </body>
+</html>

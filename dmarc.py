@@ -13,6 +13,7 @@ import sqlite3
 import sys
 import xml.etree.ElementTree as ET
 import zipfile
+import ip_list
 
 TABLE_RECORDS = '''
 CREATE TABLE records (id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -88,11 +89,11 @@ class dmarc():
         self.__bar = progressbar.ProgressBar(max_value=progressbar.UnknownLength, redirect_stdout=True)
         self.__counter = 0
 
-        self.__domain_mx = []
-        if 'MY_IPS' in os.environ:
-            self.__my_ips = os.environ['MY_IPS'].split()
-        else:
-            self.__my_ips = []
+        # self.__domain_mx = []
+        # if 'MY_IPS' in os.environ:
+        #     self.__my_ips = os.environ['MY_IPS'].split()
+        # else:
+        self.__my_ips = ip_list.liste_ip()
 
     def __del__(self):
         self.__conn.commit()
@@ -119,14 +120,14 @@ class dmarc():
         except:
             return timestamp
 
-    def __get_mx(self, domain):
-        if domain not in self.__domain_mx:
-            print('Fetching MX for %s' % domain)
-            self.__domain_mx.append(domain)
-            for x in dns.resolver.query(domain, 'MX'):
-                mx = x.to_text().split()[1]
-                ips = [ str(i[4][0]) for i in socket.getaddrinfo(mx, 25)]
-                self.__my_ips.extend(ips)
+    # def __get_mx(self, domain):
+    #     if domain not in self.__domain_mx:
+    #         print('Fetching MX for %s' % domain)
+    #         self.__domain_mx.append(domain)
+    #         for x in dns.resolver.query(domain, 'MX'):
+    #             mx = x.to_text().split()[1]
+    #             ips = [ str(i[4][0]) for i in socket.getaddrinfo(mx, 25)]
+    #             self.__my_ips.extend(ips)
 
     def __rdns(self):
         self.__cursor.execute(QUERY_RDNS % self.__data['s_ip'])
@@ -152,8 +153,8 @@ class dmarc():
         self.__data['date_begin'] = int(self.doc.findtext("report_metadata/date_range/begin"))
         self.__data['date_end'] = int(self.doc.findtext("report_metadata/date_range/end"))
 
-        if 'MY_IPS' not in os.environ:
-            self.__get_mx(self.__data['domain'])
+        # if 'MY_IPS' not in os.environ:
+        #     self.__get_mx(self.__data['domain'])
 
         container = self.doc.findall("record")
         for elem in container:
@@ -202,7 +203,7 @@ class dmarc():
     def parse(self):
         inserted = 0
 
-        for f in glob.glob('./reports/*'):
+        for f in glob.glob('../report/*'):
             fp = None
             mime = filetype.guess_type(f)[0]
             if mime is None:
